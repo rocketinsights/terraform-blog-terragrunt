@@ -10,6 +10,7 @@ terraform {
     }
   }
 
+  # Terraform does not allow usage of variables in the backend config
   backend "s3" {
     bucket         = "terraform-plain-tfstate-s3-dev"
     region         = "us-west-1"
