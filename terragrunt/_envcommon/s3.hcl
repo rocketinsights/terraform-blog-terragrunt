@@ -1,7 +1,7 @@
 # ---------------------------------------------------------------------------------------------------------------------
 # COMMON TERRAGRUNT CONFIGURATION
-# This is the common component configuration for vpc. The common variables for each environment to
-# deploy vpc are defined here. This configuration will be merged into the environment configuration
+# This is the common component configuration for s3. The common variables for each environment to
+# deploy s3 are defined here. This configuration will be merged into the environment configuration
 # via an include block.
 # ---------------------------------------------------------------------------------------------------------------------
 
@@ -17,7 +17,7 @@ locals {
   # Expose the base source URL so different versions of the module can be deployed in different environments. This will
   # be used to construct the terraform block in the child terragrunt configurations.
   base_module_source_url = local.env_vars.locals.base_module_source_url
-  module_source_url = "${local.base_module_source_url}/simple-vpc"
+  module_source_url = "${local.base_module_source_url}/simple-s3"
 }
 
 # Terragrunt will copy the Terraform configurations specified by the source parameter, along with any files in the
@@ -26,6 +26,6 @@ locals {
 # deployed version.
 terraform {
   # No need to uncomment anything for local development
-  # terragrunt apply --terragrunt-source=../../../..//modules/simple-vpc
+  # terragrunt apply --terragrunt-source=../../../..//modules/simple-s3
   source = "${local.module_source_url}?ref=main"
 }

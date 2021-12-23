@@ -7,6 +7,7 @@ locals {
   env_vars = read_terragrunt_config(find_in_parent_folders("env.hcl"))
 
   # Define as Terragrunt local vars to make it easier to use and change
+  project_name     = local.common_vars.locals.project_name
   app_id           = local.common_vars.locals.app_id
   environment_name = local.env_vars.locals.environment_name
   aws_region       = local.env_vars.locals.aws_region
@@ -41,6 +42,8 @@ remote_state {
 
 # Generate an AWS provider block
 generate "provider" {
+  # This is using the Terraform built-in override file functionality
+  # https://www.terraform.io/language/files/override
   path = "providers_override.tf"
   if_exists = "overwrite_terragrunt"
   contents = <<EOF
@@ -58,11 +61,24 @@ terraform {
 }
 provider "aws" {
   region = "${local.aws_region}"
+
+  # See info about default_tags at
+  # https://blog.rocketinsights.com/best-practices-for-terraform-aws-tags/
+  default_tags {
+    tags = {
+      project     = "${local.project_name}"
+      app-id      = "${local.app_id}"
+      environment = "${local.environment_name}"
+    }
+  }
 }
 EOF
 }
 
 terraform {
+  # Terragrunt extra_arguments sets Terraform options in one place
+  # To do this in Terraform would require a custom bash script
+
   # Force Terraform to run with increased parallelism
   extra_arguments "parallelism" {
     commands = get_terraform_commands_that_need_parallelism()
