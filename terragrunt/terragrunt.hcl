@@ -1,29 +1,22 @@
 # Environment-level TF locals, replacing duplicate locals.tf keys
 locals {
-  # Automatically load variables commaon to all environments (dev, qa, prod)
+  # Automatically load variables common to all environments (dev, qa, prod)
   common_vars = read_terragrunt_config(find_in_parent_folders("_envcommon/common.hcl"))
 
   # Automatically load region-level variables
-  region_vars = read_terragrunt_config(find_in_parent_folders("region.hcl"))
+  env_vars = read_terragrunt_config(find_in_parent_folders("env.hcl"))
 
+  # Define as Terragrunt local vars to make it easier to use and change
   app_id           = local.common_vars.locals.app_id
-  # aws_region = "us-west-1"
-  aws_region       = local.region_vars.locals.aws_region
-  environment_name = "dev"
+  environment_name = local.env_vars.locals.environment_name
+  aws_region       = local.env_vars.locals.aws_region
 }
 
 # Global TF variables input, replacing duplicate terraform.tfvars keys
-inputs = {
-  app_id           = local.app_id
-  environment_name = local.environment_name
-}
-
-# Include the envcommon configuration for the component. The envcommon configuration contains settings
-# that are common across all environments (dev, qa, prod).
-//include "envcommon" {
-//  path   = "${dirname(find_in_parent_folders())}/../_envcommon/common.hcl"
-//  expose = true
-//}
+inputs = merge (
+  local.common_vars.locals,
+  local.env_vars.locals,
+)
 
 # Global TF remote state, replacing duplicate providers.tf terraform backend
 remote_state {
@@ -48,27 +41,36 @@ remote_state {
 
 # Generate an AWS provider block
 generate "provider" {
-  path = "terragrunt-generated-providers.tf"
+  path = "providers_override.tf"
   if_exists = "overwrite_terragrunt"
   contents = <<EOF
+# In a professional setting, a hard-pin of terraform versions ensures all
+# team members use the same version, reducing state conflict
+terraform {
+  required_version = "1.1"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "3.69.0"
+    }
+  }
+}
 provider "aws" {
   region = "${local.aws_region}"
 }
 EOF
 }
-//terraform {
-//  extra_arguments "common_vars" {
-//    commands = [
-//      "plan",
-//      "apply",
-//      "import",
-//      "push",
-//      "refresh"
-//    ]
-//
-//    # Load Terraform variable that are common across all environments (dev, qa, prod)
-//    arguments = [
-//      "-var-file=${get_terragrunt_dir()}/../../common.tfvars"
-//    ]
-//  }
-//}
+
+terraform {
+  # Force Terraform to run with increased parallelism
+  extra_arguments "parallelism" {
+    commands = get_terraform_commands_that_need_parallelism()
+    arguments = ["-parallelism=15"]
+  }
+  # Force Terraform to keep trying to acquire a lock for up to 3 minutes if someone else already has the lock
+  extra_arguments "retry_lock" {
+    commands  = get_terraform_commands_that_need_locking()
+    arguments = ["-lock-timeout=3m"]
+  }
+}
