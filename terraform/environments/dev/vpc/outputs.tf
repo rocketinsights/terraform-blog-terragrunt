@@ -1,3 +1,5 @@
+# In Terraform, note the manual duplication of outputs to expose data from modules
+# Int Terragrunt, the outputs of the modules are automatically outputted
 output "azs" {
   value = module.terraform_plain_vpc.azs
 }
