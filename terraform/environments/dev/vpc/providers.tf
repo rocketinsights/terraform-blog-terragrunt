@@ -30,6 +30,15 @@ provider "aws" {
       project     = local.project_name
       app-id      = local.app_id
       environment = var.environment_name
+
+      // This regex results in the terraform git
+      // repo name and any sub-directories.
+      // For this repo, terraform-base-path is
+      // terraform-blog-terragrunt/terraform/environments/dev/vpc
+      // In Terragrunt, this awkward regex is simplified by the built-in function path_relative_to_include()
+      // This tag helps AWS UI users discover what
+      // Terraform git repo and directory to modify
+      terraform-base-path = replace(path.cwd, "/^.*?(${local.project_name}\\/)/", "$1")
     }
   }
 }
