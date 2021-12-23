@@ -16,5 +16,4 @@ variable "app_id" {
 variable "bucket_name" {
   type        = string
   description = "Name of application s3 bucket"
-  default     = "simple-s3"
 }
