@@ -7,4 +7,5 @@ module "terraform_plain_iam" {
   project_name      = local.project_name
   environment_name  = var.environment_name
   app_id            = local.app_id
+  bucket_name       = var.bucket_name
 }
