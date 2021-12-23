@@ -1,0 +1,1 @@
+This module creates a simple private S3 bucket
