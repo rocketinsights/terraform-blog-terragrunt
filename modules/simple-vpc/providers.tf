@@ -1,6 +1,6 @@
 # This is the minimum Terraform versions that this module was tested against
 terraform {
-  required_version = ">= 1.1"
+  required_version = "~> 1.1"
 
   required_providers {
     aws = {
