@@ -10,13 +10,20 @@ terraform {
     }
   }
 
-//  backend "s3" {
-//    bucket         = "terraform-plain-tfstate-s3-dev"
-//    region         = "us-west-1"
-//    key            = "vpc/terraform.tfstate"
-//    dynamodb_table = "terraform-plain-tfstate-dynamodb-dev"
-//    encrypt        = true
-//  }
+  # After creating the Terraform S3 and DynamoDB resources locally,
+  # uncomment the s3 backend section below and run `terraform init`
+  # Terraform will ask "Do you want to copy existing state to the new backend?"
+  # Answer "yes"
+  # Your local terraform.tfstate is transferred to the Terraform S3 backend
+  # and now others can manage the S3 bucket via Terraform
+  # Remember to check in the providers.tf file back into git when the above is complete
+  backend "s3" {
+    bucket         = "terraform-plain-tfstate-s3-dev"
+    region         = "us-west-1"
+    key            = "terraform-infra/terraform.tfstate"
+    dynamodb_table = "terraform-plain-tfstate-dynamodb-dev"
+    encrypt        = true
+  }
 }
 
 provider "aws" {
