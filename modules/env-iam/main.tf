@@ -21,6 +21,11 @@ resource "aws_iam_role" "ec2_role" {
   })
 }
 
+resource "aws_iam_instance_profile" "ec2_instance_profile" {
+  name = "${var.app_id}-ec2-instance-profile-${var.environment_name}"
+  role = aws_iam_role.ec2_role.name
+}
+
 resource "aws_iam_policy" "app_s3_access" {
   name        = "${var.app_id}_app_s3_policy_${var.environment_name}"
   path        = "/${var.project_name}/"
