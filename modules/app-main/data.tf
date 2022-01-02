@@ -24,6 +24,6 @@ data "aws_ami" "ec2_ami" {
 }
 
 data "aws_iam_role" "ec2_role" {
-  name = "${var.app_id}_ec2_role_${var.environment_name}"
+  name = "${var.app_id}-ec2-role-${var.environment_name}"
 }
 
