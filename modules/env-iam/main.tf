@@ -1,5 +1,5 @@
 resource "aws_iam_role" "ec2_role" {
-  name        = "${var.app_id}_ec2_role_${var.environment_name}"
+  name        = "${var.app_id}-ec2-role-${var.environment_name}"
   path        = "/${var.project_name}/"
   description = "Role for EC2 for app ${var.app_id} in ${var.environment_name}"
 
