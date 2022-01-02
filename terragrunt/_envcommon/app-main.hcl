@@ -17,7 +17,7 @@ locals {
   # Expose the base source URL so different versions of the module can be deployed in different environments. This will
   # be used to construct the terraform block in the child terragrunt configurations.
   base_module_source_url = local.env_vars.locals.base_module_source_url
-  module_source_url = "${local.base_module_source_url}/env-iam"
+  module_source_url = "${local.base_module_source_url}/app-main"
 }
 
 # Terragrunt will copy the Terraform configurations specified by the source parameter, along with any files in the
@@ -26,10 +26,10 @@ locals {
 # deployed version.
 terraform {
   # No need to uncomment anything for local development
-  # terragrunt apply --terragrunt-source=../../../..//modules/env-iam
+  # terragrunt apply --terragrunt-source=../../../..//modules/app-main
   source = "${local.module_source_url}?ref=main"
 }
 
 dependencies {
-  paths = ["../s3"]
+  paths = ["../vpc", "../iam"]
 }

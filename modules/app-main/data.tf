@@ -23,7 +23,7 @@ data "aws_ami" "ec2_ami" {
   }
 }
 
-data "aws_iam_role" "ec2_role" {
-  name = "${var.app_id}-ec2-role-${var.environment_name}"
+data "aws_iam_instance_profile" "ec2_instance_profile" {
+  name = "${var.app_id}-ec2-instance-profile-${var.environment_name}"
 }
 

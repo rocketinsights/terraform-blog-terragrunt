@@ -1,4 +1,6 @@
-# Environment-level TF locals, replacing duplicate locals.tf keys
+# The root terragrunt.hcl containing the configuration applicable to all environments (dev, qa, prod)
+
+# Loading the common and env variables
 locals {
   # Automatically load variables common to all environments (dev, qa, prod)
   common_vars = read_terragrunt_config(find_in_parent_folders("_envcommon/common.hcl"))
@@ -13,13 +15,15 @@ locals {
   aws_region       = local.env_vars.locals.aws_region
 }
 
-# Global TF variables input, replacing duplicate terraform.tfvars keys
+# Using the common and env variables as input for the Terraform modules
+# Replaces duplicate terraform.tfvars files and Terraform modules configuration
 inputs = merge (
   local.common_vars.locals,
   local.env_vars.locals,
 )
 
-# Global TF remote state, replacing duplicate providers.tf terraform backend
+# Common Terraform remote state that can be reused by all modules
+# Replaces duplicate providers.tf terraform backend
 remote_state {
   backend = "s3"
 

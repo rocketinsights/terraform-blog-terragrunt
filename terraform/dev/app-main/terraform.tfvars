@@ -2,4 +2,5 @@
 # In Terragrunt, these variables are consolidated in one env.hcl
 environment_name = "dev"
 aws_region       = "us-west-1"
-bucket_name      = "simple-s3"
+server_count     = 3
+server_type      = "t2.micro"
