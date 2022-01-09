@@ -1,13 +1,6 @@
-# ---------------------------------------------------------------------------------------------------------------------
-# COMMON TERRAGRUNT CONFIGURATION
-# This is the common component configuration for s3. The common variables for each environment to
-# deploy s3 are defined here. This configuration will be merged into the environment configuration
-# via an include block.
-# ---------------------------------------------------------------------------------------------------------------------
+# This is the common component configuration for S3 in all environments (dev, qa, prod).
 
-# ---------------------------------------------------------------------------------------------------------------------
 # Locals are named constants that are reusable within the configuration.
-# ---------------------------------------------------------------------------------------------------------------------
 locals {
   # Load common.hcl to get base_module_source_url
   # Unfortunately a bit of duplication with the root terragrunt.hcl locals
@@ -26,6 +19,6 @@ locals {
 # deployed version.
 terraform {
   # No need to uncomment anything for local development
-  # terragrunt apply --terragrunt-source=../../../..//modules/simple-s3
+  # terragrunt apply --terragrunt-source=../../..//modules/simple-s3
   source = "${local.module_source_url}?ref=main"
 }

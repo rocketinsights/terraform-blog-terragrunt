@@ -1,13 +1,6 @@
-# ---------------------------------------------------------------------------------------------------------------------
-# COMMON TERRAGRUNT CONFIGURATION
-# This is the common component configuration for vpc. The common variables for each environment to
-# deploy vpc are defined here. This configuration will be merged into the environment configuration
-# via an include block.
-# ---------------------------------------------------------------------------------------------------------------------
+# This is the common component configuration for vpc in all environments (dev, qa, prod).
 
-# ---------------------------------------------------------------------------------------------------------------------
 # Locals are named constants that are reusable within the configuration.
-# ---------------------------------------------------------------------------------------------------------------------
 locals {
   # Load common.hcl to get base_module_source_url
   # Unfortunately a bit of duplication with the root terragrunt.hcl locals
@@ -15,7 +8,7 @@ locals {
   env_vars = read_terragrunt_config(find_in_parent_folders("_envcommon/common.hcl"))
 
   # Expose the base source URL so different versions of the module can be deployed in different environments. This will
-  # be used to construct the terraform block in the child terragrunt configurations.
+  # be used to construct the terraform block in the child Terragrunt configurations.
   base_module_source_url = local.env_vars.locals.base_module_source_url
   module_source_url = "${local.base_module_source_url}/simple-vpc"
 }
@@ -26,6 +19,6 @@ locals {
 # deployed version.
 terraform {
   # No need to uncomment anything for local development
-  # terragrunt apply --terragrunt-source=../../../..//modules/simple-vpc
+  # terragrunt apply --terragrunt-source=../../..//modules/simple-vpc
   source = "${local.module_source_url}?ref=main"
 }

@@ -1,13 +1,6 @@
-# ---------------------------------------------------------------------------------------------------------------------
-# COMMON TERRAGRUNT CONFIGURATION
-# This is the common component configuration for s3. The common variables for each environment to
-# deploy s3 are defined here. This configuration will be merged into the environment configuration
-# via an include block.
-# ---------------------------------------------------------------------------------------------------------------------
+# This is the common component configuration for main application in all environments (dev, qa, prod).
 
-# ---------------------------------------------------------------------------------------------------------------------
 # Locals are named constants that are reusable within the configuration.
-# ---------------------------------------------------------------------------------------------------------------------
 locals {
   # Load common.hcl to get base_module_source_url
   # Unfortunately a bit of duplication with the root terragrunt.hcl locals
@@ -26,10 +19,14 @@ locals {
 # deployed version.
 terraform {
   # No need to uncomment anything for local development
-  # terragrunt apply --terragrunt-source=../../../..//modules/app-main
+  # terragrunt apply --terragrunt-source=../../..//modules/app-main
   source = "${local.module_source_url}?ref=main"
 }
 
+# The app-main module is dependent on both the vpc and IAM modules completing first
+# By defining dependencies, Terragrunt will run the Terraform modules in the correct order.
+# Without Terragrunt, you would have to hard-code the execution order of the Terraform module
+# in a Bash script
 dependencies {
   paths = ["../vpc", "../iam"]
 }

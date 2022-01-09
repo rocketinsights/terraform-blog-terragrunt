@@ -1,12 +1,17 @@
+# In Terraform, there are multiple near-identical cut and paste providers.tf
+# In Terrarunt, all these settings are centralized in one root terragrunt.hcl
+
 # In a professional setting, a hard-pin of terraform versions ensures all
-# team members use the same version, reducing state conflict
+# team members use the same version, reducing state conflict.
+# In Terraform, changing these version numbers require changing multiple providers.tf
+# In Terragrunt, these version settings are changed in one root terragrunt.hcl
 terraform {
-  required_version = "1.1"
+  required_version = "1.1.2"
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "3.69.0"
+      version = "3.70.0"
     }
   }
 

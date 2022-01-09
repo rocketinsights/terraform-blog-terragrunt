@@ -1,11 +1,12 @@
 # The root terragrunt.hcl containing the configuration applicable to all environments (dev, qa, prod)
 
+# Locals are named constants that are reusable within the configuration.
 # Loading the common and env variables
 locals {
   # Automatically load variables common to all environments (dev, qa, prod)
   common_vars = read_terragrunt_config(find_in_parent_folders("_envcommon/common.hcl"))
 
-  # Automatically load region-level variables
+  # Automatically load environment -level variables
   env_vars = read_terragrunt_config(find_in_parent_folders("env.hcl"))
 
   # Define as Terragrunt local vars to make it easier to use and change
@@ -45,6 +46,8 @@ remote_state {
 }
 
 # Generate an AWS provider block
+# In Terraform, changing these provider settings and versions results in changing multiple providers.tf
+# In Terragrunt, this root terragrunt.hcl is the only place you need to make the change
 generate "provider" {
   # This is using the Terraform built-in override file functionality
   # https://www.terraform.io/language/files/override
@@ -54,12 +57,12 @@ generate "provider" {
 # In a professional setting, a hard-pin of terraform versions ensures all
 # team members use the same version, reducing state conflict
 terraform {
-  required_version = "1.1"
+  required_version = "1.1.2"
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "3.69.0"
+      version = "3.70.0"
     }
   }
 }
