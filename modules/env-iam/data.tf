@@ -2,7 +2,8 @@ data "aws_iam_policy" "ssm_access" {
   name = "AmazonSSMFullAccess"
 }
 
-# I am not a fan of remote state lookup since it tightly couples the modules
+# This lookup of the S3 bucket on AWS ensures that it exists
+# and exits out early if it does not
 data "aws_s3_bucket" "app_s3_bucket" {
-  bucket = "${var.app_id}-${var.bucket_name}-${var.environment_name}"
+  bucket = var.bucket_name
 }
