@@ -15,13 +15,14 @@ terraform {
     }
   }
 
-  # After creating the Terraform S3 and DynamoDB resources locally,
-  # uncomment the s3 backend section below and run `terraform init`
-  # Terraform will ask "Do you want to copy existing state to the new backend?"
-  # Answer "yes"
-  # Your local terraform.tfstate is transferred to the Terraform S3 backend
-  # and now others can manage the S3 bucket via Terraform
-  # Remember to check in the providers.tf file back into git when the above is complete
+  # Terraform does not allow usage of variables in the backend config resulting in a lot of
+  # hard-coding and duplicate entries in multiple providers.tf .
+  # Each Terraform configuration will need its own hard-coded unique key,
+  # which can lead to cut and paste operational errors.
+  #
+  # In Terragrunt, the backend settings are centralized using the remote_state block in one root terragrunt.hcl
+  # and variables can be used.
+  # In addition, the Terragrunt path_relative_to_include() function can ensure that the backend key is dynamic.
   backend "s3" {
     bucket         = "terraform-plain-tfstate-s3-dev"
     region         = "us-west-1"

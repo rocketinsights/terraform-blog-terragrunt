@@ -29,9 +29,12 @@ remote_state {
   backend = "s3"
 
   # No need to create the tfstate via terraform-infra module
-  # If the S3 and DynamoDB resource does not exist, Terragrunt will create it
-  # Notice you can use Terragrunt local variables in the backend config
-  # In Terraform, variable usage is not allowed in the backend config
+  # If the S3 and DynamoDB resource does not exist, Terragrunt will create it.
+  # Notice you can use Terragrunt local variables in the backend config.
+  # In Terraform, variable usage is not allowed in the backend config.
+  #
+  # In Terragrunt, the path_relative_to_include() function can ensure that the backed key is dynamic.
+  # In Terraform, the unique backend key must be hard-coded for each configuration.
   config = {
     bucket = "${local.app_id}-tfstate-s3-${local.environment_name}"
     region = local.aws_region

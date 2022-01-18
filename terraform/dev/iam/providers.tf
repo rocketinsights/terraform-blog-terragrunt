@@ -15,10 +15,14 @@ terraform {
     }
   }
 
-  # Terraform does not allow usage of variables in the backend config
-  # resulting in a lot of hard-coding and duplicate entries in multiple providers.tf
-  # In Terragrunt, the backend settings are centralized in one root terragrunt.hcl
+  # Terraform does not allow usage of variables in the backend config resulting in a lot of
+  # hard-coding and duplicate entries in multiple providers.tf .
+  # Each Terraform configuration will need its own hard-coded unique key,
+  # which can lead to cut and paste operational errors.
+  #
+  # In Terragrunt, the backend settings are centralized using the remote_state block in one root terragrunt.hcl
   # and variables can be used.
+  # In addition, the Terragrunt path_relative_to_include() function can ensure that the backend key is dynamic.
   backend "s3" {
     bucket         = "terraform-plain-tfstate-s3-dev"
     region         = "us-west-1"
