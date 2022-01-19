@@ -104,4 +104,44 @@ terraform {
     commands  = get_terraform_commands_that_need_locking()
     arguments = ["-lock-timeout=3m"]
   }
+
+  # Hooks are external programs that will run before, after, or on error Terragrunt execution
+  # In the real world, you can use before,after,error hooks to post on Slack or CloudWatch to
+  # monitor environment changes
+  before_hook "before_plan_apply_hook" {
+    commands     = ["plan", "apply"]
+    execute      = ["echo", "START Terragrunt execution"]    
+  }
+  after_hook "after_plan_apply_hook" {
+    commands     = ["plan", "apply"]
+    execute      = ["echo", "FINISH Terragrunt execution"]    
+  }
+
+  before_hook "before_destroy_hook" {
+    commands     = ["destroy"]
+    execute      = ["echo", "START Terragrunt destroy"]    
+  }
+  after_hook "after_destroy_hook" {
+    commands     = ["destroy"]
+    execute      = ["echo", "FINISH Terragrunt destroy"]    
+  }
+
+  error_hook "on_error_hook" {
+    commands     = ["plan", "apply", "destroy"]
+    execute      = ["echo", "ERROR running Terragrunt"]
+    on_errors = [
+      ".*",
+    ]    
+  }
+
 }
+
+# Terragrunt will automatically retry the underlying Terraform commands if it fails
+# You can configure custom errors to retry in the retryable_errors list
+# and you can specify how ofter the retries occur
+//retryable_errors = [
+//  "(?s).*Error installing provider.*tcp.*connection reset by peer.*",
+//  "(?s).*ssh_exchange_identification.*Connection closed by remote host.*"
+//]
+retry_max_attempts = 3
+retry_sleep_interval_sec = 5

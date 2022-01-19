@@ -48,7 +48,7 @@ inputs = {
 }
 
 # The IAM module is dependent on the S3 module completing first
-# By defining dependencies, Terragrunt will run the Terraform modules in the correct order.
+# By defining dependencies, Terragrunt run-all will run the Terraform modules in the correct order.
 # Without Terragrunt, you would have to hard-code the execution order of the Terraform module
 # in a Bash script
 dependencies {
