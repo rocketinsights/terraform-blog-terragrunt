@@ -83,7 +83,7 @@ provider "aws" {
       // This tag helps AWS UI users discover what
       // Terragrunt git repo and directory to modify
       // No need for an awkward regex like in Terraform
-      terragrunt-base-path = "${local.project_name}/terragrunt/${path_relative_to_include()}"
+      terragrunt-base-path = "${local.project_name}/${get_path_from_repo_root()}"
     }
   }
 }

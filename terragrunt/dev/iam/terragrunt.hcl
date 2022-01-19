@@ -9,3 +9,8 @@ include "envcommon" {
   path   = "${dirname(find_in_parent_folders())}/_envcommon/iam.hcl"
   expose = true
 }
+
+
+# inputs = {
+#   bucket_name = dependency.lookup_s3_module.outputs.id
+# }
