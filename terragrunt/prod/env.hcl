@@ -7,7 +7,7 @@ locals {
   aws_region       = "us-east-2"
   # Note that terraform.tfvars cannot interpolate variables so the azs would have
   # hard-coded values, like us-west-1a and us-west-1b
-  azs              = ["${local.aws_region}a", "${local.aws_region}b", "us-east-1c"]
+  azs              = ["${local.aws_region}a", "${local.aws_region}b", "${local.aws_region}c"]
   cidr             =  "10.0.0.0/8"
   public_subnets   =  ["10.10.101.0/24", "10.10.102.0/24", "10.10.103.0/24"]
   bucket_name      = "simple-s3"

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# This this the Rocker Insights bash template
+# This this the Rocket Insights bash template
 # Contains the minimal functionalities most bash scripts need
 # * Right bash settings (sets and traps)
 # * Man page style documentation
@@ -151,6 +151,7 @@ array_contains_element() {
 
   return 1
 }
+
 parse_config_run_all_order() {
   log "TRACE" "Reading config file ${OPT_CONFIGFILE}"
   if [[ -z "${OPT_CONFIGFILE}" ]]; then
@@ -177,9 +178,20 @@ parse_config_run_all_order() {
 execute_run_all_order() {
   local tf_idx
   local -r tf_count=${#run_all_order[@]}
-  for tf_idx in "${!run_all_order[@]}";do
-    printf "Executing ${OPT_SUBCOMMAND} %d of %d: %s\n" "$((tf_idx+1))" "${tf_count}" "${run_all_order[${tf_idx}]}"
-    cd "${SCRIPT_DIR}/${run_all_order[${tf_idx}]}"
+  local execute_order
+  declare -a execute_order
+  if [[ "${OPT_SUBCOMMAND}" == "destroy" ]]; then
+    # Reverse the run order for destroy
+    local run_idx
+    for run_idx in "${!run_all_order[@]}";do
+      execute_order[$((tf_count-run_idx-1))]="${run_all_order[${run_idx}]}"
+    done
+  else
+    execute_order=("${run_all_order[@]}")
+  fi
+  for tf_idx in "${!execute_order[@]}";do
+    printf "Executing ${OPT_SUBCOMMAND} %d of %d: %s\n" "$((tf_idx+1))" "${tf_count}" "${execute_order[${tf_idx}]}"
+    cd "${SCRIPT_DIR}/${execute_order[${tf_idx}]}"
     terraform init -upgrade
     terraform "${OPT_SUBCOMMAND}"
   done
@@ -210,7 +222,7 @@ OPT_CONFIGFILE=""
 OPT_SUBCOMMAND=""
 
 # An array of the correct order to run the Terraform sections
-unset run_all_order
+declare -a run_all_order
 
 validate_cmd_options() {
   if [[ -z "${OPT_CONFIGFILE}" ]]; then
